@@ -11,6 +11,8 @@ from openpyxl import load_workbook
 from util.TxtParse import TxtParse, parseHtml
 from chart_tj import get_date_range
 
+# 2018-07-26 :增加ctx_caps指标
+
 
 # 判断网元类型
 def get_cluster_type(cluster):
@@ -171,13 +173,16 @@ def get_volte_caps():
     scpas_caps = None
     catas_caps = None
     scp_caps = None
+    ctx_caps = None
     if os.path.exists(volte_caps_file):
         record_data = get_data(volte_caps_file)
-        scpas_caps = float(record_data[0][1])
-        catas_caps = float(record_data[1][1])
-        scp_caps = float(record_data[2][1])
-        db.insert("caps", date=yesterday.strftime("%Y%m%d"), scp_caps=scp_caps, scpas_caps=scpas_caps, catas_caps=catas_caps)
-    return scp_caps, scpas_caps, catas_caps
+        ctx_caps = float(record_data[0][1])
+        scpas_caps = float(record_data[1][1])
+        catas_caps = float(record_data[2][1])
+        scp_caps = float(record_data[3][1])
+        db.insert("caps", date=yesterday.strftime("%Y%m%d"), scp_caps=scp_caps, scpas_caps=scpas_caps,
+                  catas_caps=catas_caps, ctx_caps=ctx_caps)
+    return scp_caps, scpas_caps, catas_caps, ctx_caps
 
 def get_week_caps():
     today = datetime.datetime.now().strftime("%Y%m%d")
@@ -207,12 +212,12 @@ def quato_analyse(quato_file):
             values.append(line[1])
     max_cluster, max_streamnumber = get_streamnumber()
     vpmn, crbt = get_vpmn_users()
-    scp_caps, scpas_caps, catas_caps = get_volte_caps()
-    clusters.extend([max_cluster, "SCPAS", "CATAS", "SCP", "SCPAS", "CATAS"])
-    values.extend([max_streamnumber, vpmn, crbt, scp_caps, scpas_caps, catas_caps])
+    scp_caps, scpas_caps, catas_caps, ctx_caps= get_volte_caps()
+    clusters.extend([max_cluster, "SCPAS", "CATAS", "SCP", "SCPAS", "CATAS","CTX"])
+    values.extend([max_streamnumber, vpmn, crbt, scp_caps, scpas_caps, catas_caps, ctx_caps])
     quato_name = ["2/3G 彩铃播放成功率", "2/3G V网呼叫成功率", "SCP忙时CAPS数", "二卡充值成功率","SCPAS网络接通率",
                   "彩铃AS网络接通率","彩铃AS invite响应率",
-                  "SCP最大话单流水号", "VPMN用户数", "彩铃用户数", "SCP CAPS", "SCPAS CAPS", "CATAS CAPS"]
+                  "SCP最大话单流水号", "VPMN用户数", "彩铃用户数", "SCP CAPS", "SCPAS CAPS", "CATAS CAPS", "CTX CAPS"]
     quato_data = list(zip(quato_name, clusters, values))
     # [('2/3G 彩铃播放成功率', 'CRBT-sccl16', '99.78'),
     #  ('2/3G V网呼叫成功率', 'SCP-scp39', '98.8494'),

@@ -12,7 +12,7 @@ from util.TxtParse import TxtParse, parseHtml
 from chart_tj import get_date_range
 
 # 2018-07-26 :增加ctx_caps指标
-
+# 2018-08-03 :增加视频彩铃指标
 
 # 判断网元类型
 def get_cluster_type(cluster):
@@ -150,10 +150,12 @@ def get_vpmn_users():
     hjh_file = config.USERS_PATH + "hjhvolteuser." + str(today) + ".unl"
     pyq_file = config.USERS_PATH + "pyqvolteuser." + str(today) + ".unl"
     crbt_file = config.USERS_PATH + "crbttjvolte." + str(today) + ".unl"
+    vrbt_file= config.USERS_PATH + "vrbt." + str(today) + ".unl"
     vpmn_volte = None
     hjh_volte = None
     pyq_volte = None
     crbt_volte = None
+    vrbt_users = None
     if os.path.exists(vpmn_file):
         vpmn_volte = float(get_data(vpmn_file)[0][0])
     if os.path.exists(hjh_file):
@@ -162,8 +164,11 @@ def get_vpmn_users():
         pyq_volte = float(get_data(pyq_file)[0][0])
     if os.path.exists(crbt_file):
         crbt_volte = sum([float(x[1]) for x in get_data(crbt_file)])
-    db.insert("users", date=today, vpmn_volte=vpmn_volte, crbt_volte=crbt_volte, hjh_volte=hjh_volte, pyq_volte=pyq_volte)
-    return vpmn_volte, crbt_volte
+    if os.path.exists(pyq_file):
+        vrbt_users = float(get_data(vrbt_file)[0][0])
+    db.insert("users", date=today, vpmn_volte=vpmn_volte, crbt_volte=crbt_volte, hjh_volte=hjh_volte,
+              pyq_volte=pyq_volte, vrbt=vrbt_users)
+    return vpmn_volte, crbt_volte, vrbt_users
 
 
 def get_volte_caps():
@@ -211,13 +216,14 @@ def quato_analyse(quato_file):
             clusters.append(line[0])
             values.append(line[1])
     max_cluster, max_streamnumber = get_streamnumber()
-    vpmn, crbt = get_vpmn_users()
+    vpmn, crbt, vrbt = get_vpmn_users()
     scp_caps, scpas_caps, catas_caps, ctx_caps= get_volte_caps()
-    clusters.extend([max_cluster, "SCPAS", "CATAS", "SCP", "SCPAS", "CATAS","CTX"])
-    values.extend([max_streamnumber, vpmn, crbt, scp_caps, scpas_caps, catas_caps, ctx_caps])
+    clusters.extend([max_cluster, "SCPAS", "CATAS", "CAVTAS", "SCP", "SCPAS", "CATAS","CTX"])
+    values.extend([max_streamnumber, vpmn, crbt, vrbt, scp_caps, scpas_caps, catas_caps, ctx_caps])
     quato_name = ["2/3G 彩铃播放成功率", "2/3G V网呼叫成功率", "SCP忙时CAPS数", "二卡充值成功率","SCPAS网络接通率",
                   "彩铃AS网络接通率","彩铃AS invite响应率",
-                  "SCP最大话单流水号", "VPMN用户数", "彩铃用户数", "SCP CAPS", "SCPAS CAPS", "CATAS CAPS", "CTX CAPS"]
+                  "SCP最大话单流水号", "VPMN用户数", "音频彩铃用户数","视频彩铃用户数",
+                  "SCP CAPS", "SCPAS CAPS", "CATAS CAPS", "CTX CAPS"]
     quato_data = list(zip(quato_name, clusters, values))
     # [('2/3G 彩铃播放成功率', 'CRBT-sccl16', '99.78'),
     #  ('2/3G V网呼叫成功率', 'SCP-scp39', '98.8494'),
@@ -294,4 +300,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
 

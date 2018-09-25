@@ -43,7 +43,7 @@ cluters_map = {
 USERS_PATH = "data/"
 # 原始文件行数，用来检查数据是否缺失
 # 智能网彩铃用户数原始文件行数
-CRBT_VPMN_LINES = 2071
+CRBT_VPMN_LINES = 2131
 # 短号短信原始文件行数
 SMS_LINES = 220
 

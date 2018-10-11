@@ -13,6 +13,7 @@ from chart_tj import get_date_range
 
 # 2018-07-26 :增加ctx_caps指标
 # 2018-08-03 :增加视频彩铃指标
+# 2018-10-10 :增加SCPAS话单流水号
 
 # 判断网元类型
 def get_cluster_type(cluster):
@@ -118,7 +119,7 @@ def cpu_analyse(cpu_file):
 def get_data(unl):
     with open(unl, "r") as f:
         lines = f.readlines()
-        data = [line.split("|") for line in lines]
+        data = [line.strip("\n").split("|") for line in lines]
     for x in data:
         try:
             x.remove("\n")
@@ -140,6 +141,19 @@ def get_streamnumber():
                 max_cluster = x[0]
                 max_streamnumber = x[1].strip("\n")
                 break
+    return max_cluster, max_streamnumber
+
+
+def get_scpas_streamnumber():
+    today = datetime.date.today().strftime("%Y%m%d")
+    record_file = config.USERS_PATH + "scpas_stream." + str(today) + ".unl"
+    max_streamnumber = None
+    max_cluster = None
+    if os.path.exists(record_file):
+        record_data = get_data(record_file)
+        record_data.sort(key=lambda x: int(x[1]), reverse=True)
+        max_cluster = record_data[0][0]
+        max_streamnumber = record_data[0][1]
     return max_cluster, max_streamnumber
 
 
@@ -216,13 +230,14 @@ def quato_analyse(quato_file):
             clusters.append(line[0])
             values.append(line[1])
     max_cluster, max_streamnumber = get_streamnumber()
+    scpas_max_cluster, scpas_max_streamnumber = get_scpas_streamnumber()
     vpmn, crbt, vrbt = get_vpmn_users()
     scp_caps, scpas_caps, catas_caps, ctx_caps= get_volte_caps()
-    clusters.extend([max_cluster, "SCPAS", "CATAS", "CAVTAS", "SCP", "SCPAS", "CATAS","CTX"])
-    values.extend([max_streamnumber, vpmn, crbt, vrbt, scp_caps, scpas_caps, catas_caps, ctx_caps])
+    clusters.extend([max_cluster, scpas_max_cluster,"SCPAS", "CATAS", "CAVTAS", "SCP", "SCPAS", "CATAS","CTX"])
+    values.extend([max_streamnumber, scpas_max_streamnumber,vpmn, crbt, vrbt, scp_caps, scpas_caps, catas_caps, ctx_caps])
     quato_name = ["2/3G 彩铃播放成功率", "2/3G V网呼叫成功率", "SCP忙时CAPS数", "二卡充值成功率","SCPAS网络接通率",
                   "彩铃AS网络接通率","彩铃AS invite响应率",
-                  "SCP最大话单流水号", "VPMN用户数", "音频彩铃用户数","视频彩铃用户数",
+                  "SCP最大话单流水号", "SCPAS最大话单流水号","VPMN用户数", "音频彩铃用户数","视频彩铃用户数",
                   "SCP CAPS", "SCPAS CAPS", "CATAS CAPS", "CTX CAPS"]
     quato_data = list(zip(quato_name, clusters, values))
     # [('2/3G 彩铃播放成功率', 'CRBT-sccl16', '99.78'),
@@ -233,6 +248,7 @@ def quato_analyse(quato_file):
     # ('彩铃AS网络接通率', 'SCP-scpas38', '97.58'),
     # ('彩铃AS invite响应率', 'SCP-scpas38', '97.58'),
     # ('SCP最大话单流水号', 'scp292', '947889930'),
+    # ('SCPAS最大话单流水号', 'sdb062', '947889930'),
     #  ('VPMN用户数', 'SCPAS', 10838581.0),
     # ('彩铃用户数', 'CATAS', 5310746.0)]
     wb = load_workbook("templates/d_report.xlsx", data_only=True)

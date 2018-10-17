@@ -1,4 +1,4 @@
-
+# 作业计划
 # 网元与集群对应关系
 cluters_dict ={
     "SCPAS":["scpas03","scpas04","scpas05","scpas06","scpas35","scpas38"],
@@ -40,18 +40,40 @@ cluters_map = {
 
 # 每日用户数、短号短信统计配置
 # 原始文件路径,需保留末尾的路径分隔符
-USERS_PATH = "data/"
+USERS_PATH = "/home/tongji/"
 # 原始文件行数，用来检查数据是否缺失
 # 智能网彩铃用户数原始文件行数
-CRBT_VPMN_LINES = 2131
+CRBT_VPMN_LINES = 2128
 # 短号短信原始文件行数
 SMS_LINES = 220
 
 # 业务指标统计配置
 # 原始文件路径,需保留末尾的路径分隔符
-QUATO_PATH = "data/"
+QUATO_PATH = "/home/tongji/tongji/data/"
 # maxcpu2018-06-07.unl
 # ywzb2018-06-07.unl
 # volte_crbt2018-06-06.unl
 # volte_scpas2018-06-06.unl
 # host2018-06-06.unl
+
+# 每日统计指标配置
+# 原始数据文件ywzb.unl
+# key与数据库中ywzb表字段名一致
+ywzb_tilte = {
+    '2gcl_minsucc': '2/3G 彩铃播放成功率',
+    '2gscp_minsucc': '2/3G V网呼叫成功率',
+    '2gscp_maxcaps': 'SCP忙时CAPS数',
+    'UCCminsucc': '二卡充值成功率',
+    'SCPAS_minnetsucc': 'SCPAS网络接通率',
+    'CLAS_minnetsucc': '彩铃AS网络接通率',
+    'CLAS_mininvite': '彩铃AS invite响应率',
+    'SCPAS_mininvite': 'SCPAS invite响应率'
+}
+# 原始数据文件voltecaps.unl
+# value与数据库中caps表字段名一致
+caps_tilte = {
+    'CTX': 'ctx_caps',
+    'SCPAS': 'scpas_caps',
+    'CLAS': 'catas_caps',
+    'SCP': 'scp_caps'
+}

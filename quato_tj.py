@@ -14,6 +14,7 @@ from chart_tj import get_date_range
 # 2018-07-26 :增加ctx_caps指标
 # 2018-08-03 :增加视频彩铃指标
 # 2018-10-10 :增加SCPAS话单流水号
+# 2018-10-16 :调整业务指标
 
 # 判断网元类型
 def get_cluster_type(cluster):
@@ -132,8 +133,8 @@ def get_data(unl):
 def get_streamnumber():
     today = datetime.date.today().strftime("%Y%m%d")
     record_file = config.USERS_PATH + "tjnew." + str(today) + ".unl"
-    max_streamnumber = None
-    max_cluster = None
+    max_streamnumber = ""
+    max_cluster = ""
     if os.path.exists(record_file):
         record_data = get_data(record_file)
         for x in record_data:
@@ -147,8 +148,8 @@ def get_streamnumber():
 def get_scpas_streamnumber():
     today = datetime.date.today().strftime("%Y%m%d")
     record_file = config.USERS_PATH + "scpas_stream." + str(today) + ".unl"
-    max_streamnumber = None
-    max_cluster = None
+    max_streamnumber = ""
+    max_cluster = ""
     if os.path.exists(record_file):
         record_data = get_data(record_file)
         record_data.sort(key=lambda x: int(x[1]), reverse=True)
@@ -165,11 +166,11 @@ def get_vpmn_users():
     pyq_file = config.USERS_PATH + "pyqvolteuser." + str(today) + ".unl"
     crbt_file = config.USERS_PATH + "crbttjvolte." + str(today) + ".unl"
     vrbt_file= config.USERS_PATH + "vrbt." + str(today) + ".unl"
-    vpmn_volte = None
-    hjh_volte = None
-    pyq_volte = None
-    crbt_volte = None
-    vrbt_users = None
+    vpmn_volte = ""
+    hjh_volte = ""
+    pyq_volte = ""
+    crbt_volte = ""
+    vrbt_users = ""
     if os.path.exists(vpmn_file):
         vpmn_volte = float(get_data(vpmn_file)[0][0])
     if os.path.exists(hjh_file):
@@ -189,19 +190,54 @@ def get_volte_caps():
     yesterday = (datetime.date.today() - datetime.timedelta(days=1))
     file_date = yesterday.strftime("%Y-%m-%d")
     volte_caps_file = config.QUATO_PATH + "voltecaps" + str(file_date) + ".unl"
-    scpas_caps = None
-    catas_caps = None
-    scp_caps = None
-    ctx_caps = None
+    caps_data = []
+    caps_dict = {}
     if os.path.exists(volte_caps_file):
         record_data = get_data(volte_caps_file)
-        ctx_caps = float(record_data[0][1])
-        scpas_caps = float(record_data[1][1])
-        catas_caps = float(record_data[2][1])
-        scp_caps = float(record_data[3][1])
-        db.insert("caps", date=yesterday.strftime("%Y%m%d"), scp_caps=scp_caps, scpas_caps=scpas_caps,
-                  catas_caps=catas_caps, ctx_caps=ctx_caps)
-    return scp_caps, scpas_caps, catas_caps, ctx_caps
+        for value in record_data:
+            caps_name = config.caps_tilte.get(value[0])
+            try:
+                caps_value = float(value[1])
+            except ValueError:
+                # 跳过数据为空
+                caps_value = ""
+            caps_data.append([caps_name, caps_name.split('_')[0].upper(), caps_value])
+            caps_dict[caps_name] = caps_value
+        db.insert("caps", date=yesterday.strftime("%Y%m%d"), scp_caps=caps_dict.get('scp_caps',''),
+                  scpas_caps=caps_dict.get('scpas_caps',''), catas_caps=caps_dict.get('catas_caps',''),
+                  ctx_caps=caps_dict.get('ctx_caps',''))
+    else:
+        logging.error(str(volte_caps_file) + "原始文件缺失")
+    return caps_data, caps_dict
+
+
+def get_ywzb():
+    today = datetime.date.today().strftime("%Y-%m-%d")
+    ywzb_file = config.QUATO_PATH + "ywzb" + str(today) + ".unl"
+    # list用于生成html格式
+    ywzb_data = []
+    # 数据入库使用，根据数据库表字段匹配ywzb_dict中的key
+    ywzb_dict = {}
+    if os.path.exists(ywzb_file):
+        for x in get_data(ywzb_file):
+            try:
+                x.remove('')
+            except ValueError:
+                pass
+            zb_name_id = x[0].strip(' ')
+            zb_name = config.ywzb_tilte.get(zb_name_id, zb_name_id)
+            if len(x) != 3:
+                value = [zb_name, '', '']
+            else:
+                zb_cluster = x[1].strip(' ')
+                zb_value = x[2].strip(' ')
+                value = [zb_name, zb_cluster, zb_value]
+                ywzb_dict[zb_name_id] = [zb_cluster, zb_value]
+            ywzb_data.append(value)
+    else:
+        logging.error(str(ywzb_file) + "原始文件缺失")
+    return ywzb_data, ywzb_dict
+
 
 def get_week_caps():
     today = datetime.datetime.now().strftime("%Y%m%d")
@@ -220,65 +256,72 @@ def get_week_caps():
     caps_html = parseHtml(rows, title="CAPS统计", return_all=False)
     return caps_html
 
+
 # 业务指标分析
-def quato_analyse(quato_file):
-    clusters = []
-    values = []
-    with open(quato_file, "r") as f:
-        for line in f.readlines():
-            line = line.split("|")
-            clusters.append(line[0])
-            values.append(line[1])
+def quato_analyse():
+    quato_data = [["指标项", "集群", "指标"]]
+    # 汇总业务指标
+    ywzb_data, ywzb_dict = get_ywzb()
+    quato_data.extend(ywzb_data)
+    # 汇总最大话单流水号
     max_cluster, max_streamnumber = get_streamnumber()
+    quato_data.append(["SCP最大话单流水号", max_cluster, max_streamnumber])
     scpas_max_cluster, scpas_max_streamnumber = get_scpas_streamnumber()
+    quato_data.append(["SCPAS最大话单流水号", scpas_max_cluster, scpas_max_streamnumber])
+    # 汇总用户数统计
     vpmn, crbt, vrbt = get_vpmn_users()
-    scp_caps, scpas_caps, catas_caps, ctx_caps= get_volte_caps()
-    clusters.extend([max_cluster, scpas_max_cluster,"SCPAS", "CATAS", "CAVTAS", "SCP", "SCPAS", "CATAS","CTX"])
-    values.extend([max_streamnumber, scpas_max_streamnumber,vpmn, crbt, vrbt, scp_caps, scpas_caps, catas_caps, ctx_caps])
-    quato_name = ["2/3G 彩铃播放成功率", "2/3G V网呼叫成功率", "SCP忙时CAPS数", "二卡充值成功率","SCPAS网络接通率",
-                  "彩铃AS网络接通率","彩铃AS invite响应率",
-                  "SCP最大话单流水号", "SCPAS最大话单流水号","VPMN用户数", "音频彩铃用户数","视频彩铃用户数",
-                  "SCP CAPS", "SCPAS CAPS", "CATAS CAPS", "CTX CAPS"]
-    quato_data = list(zip(quato_name, clusters, values))
-    # [('2/3G 彩铃播放成功率', 'CRBT-sccl16', '99.78'),
-    #  ('2/3G V网呼叫成功率', 'SCP-scp39', '98.8494'),
-    # ('SCP忙时CAPS数', 'SCP-scp41', '153.82'),
-    # ('二卡充值成功率', 'UCC', '97.58'),
-    # ('SCPAS网络接通率', 'SCP-scpas38', '97.58'),
-    # ('彩铃AS网络接通率', 'SCP-scpas38', '97.58'),
-    # ('彩铃AS invite响应率', 'SCP-scpas38', '97.58'),
-    # ('SCP最大话单流水号', 'scp292', '947889930'),
-    # ('SCPAS最大话单流水号', 'sdb062', '947889930'),
-    #  ('VPMN用户数', 'SCPAS', 10838581.0),
-    # ('彩铃用户数', 'CATAS', 5310746.0)]
+    quato_data.extend([["V网Volte用户数","SCPAS", vpmn], ["音频彩铃用户数", "CATAS", crbt],
+                       ["视频彩铃用户数", "CATAS", vrbt]])
+    # 汇总caps统计
+    caps_data, _= get_volte_caps()
+    quato_data.extend(caps_data)
+    # 将指标填入日报
     wb = load_workbook("templates/d_report.xlsx", data_only=True)
     ws = wb.get_sheet_by_name("用户数&关键指标")
-    # 2/3G V网呼叫成功率
-    ws.cell(row=40,column=2,value=quato_data[1][2])
-    ws.cell(row=40, column=3, value=quato_data[1][1])
-    # 2/3G 彩铃播放成功率
-    ws.cell(row=41, column=2, value=quato_data[0][2])
-    ws.cell(row=41, column=3, value=quato_data[0][1])
-    # SCP忙时CAPS数
-    ws.cell(row=44, column=2, value=quato_data[2][2])
-    ws.cell(row=44, column=3, value=quato_data[2][1])
+    # 2/3G V网呼叫成功率 2gscp_minsucc
+    scp_minsucc = ywzb_dict.get('2gscp_minsucc', '')
+    if isinstance(scp_minsucc, list):
+        ws.cell(row=40, column=2, value=scp_minsucc[1])
+        ws.cell(row=40, column=3, value=scp_minsucc[0])
+    # 2/3G 彩铃播放成功率 2gcl_minsucc
+    cl_minsucc = ywzb_dict.get('2gcl_minsucc', '')
+    if isinstance(cl_minsucc, list):
+        ws.cell(row=41, column=2, value=cl_minsucc[1])
+        ws.cell(row=41, column=3, value=cl_minsucc[0])
+    # SCP忙时CAPS数 2gscp_maxcaps
+    scp_maxcaps = ywzb_dict.get('2gscp_maxcaps', '')
+    if isinstance(scp_maxcaps, list):
+        ws.cell(row=44, column=2, value=scp_maxcaps[1])
+        ws.cell(row=44, column=3, value=scp_maxcaps[0])
     # SCP最大话单流水号
-    ws.cell(row=45, column=2, value=quato_data[7][2])
-    ws.cell(row=45, column=3, value=quato_data[7][1])
-    # 二卡充值成功率
-    ws.cell(row=46, column=2, value=quato_data[3][2])
-    ws.cell(row=46, column=3, value=quato_data[3][1])
-    # SCPAS网络接通率
-    ws.cell(row=35, column=2, value=quato_data[4][2])
-    ws.cell(row=35, column=3, value=quato_data[4][1])
-    # 彩铃AS网络接通率
-    ws.cell(row=37, column=2, value=quato_data[5][2])
-    ws.cell(row=37, column=3, value=quato_data[5][1])
-    # 彩铃AS invite响应率
-    ws.cell(row=38, column=2, value=quato_data[6][2])
-    ws.cell(row=38, column=3, value=quato_data[6][1])
+    ws.cell(row=45, column=2, value=max_streamnumber)
+    ws.cell(row=45, column=3, value=max_cluster)
+    # 二卡充值成功率 UCCminsucc
+    UCCminsucc = ywzb_dict.get('UCCminsucc', '')
+    if isinstance(UCCminsucc, list):
+        ws.cell(row=46, column=2, value=UCCminsucc[1])
+        ws.cell(row=46, column=3, value=UCCminsucc[0])
+    # SCPAS网络接通率 SCPAS_minnetsucc
+    SCPAS_minnetsucc = ywzb_dict.get('SCPAS_minnetsucc', '')
+    if isinstance(SCPAS_minnetsucc, list):
+        ws.cell(row=35, column=2, value=SCPAS_minnetsucc[1])
+        ws.cell(row=35, column=3, value=SCPAS_minnetsucc[0])
+    # 彩铃AS网络接通率 CLAS_minnetsucc
+    CLAS_minnetsucc = ywzb_dict.get('CLAS_minnetsucc', '')
+    if isinstance(CLAS_minnetsucc, list):
+        ws.cell(row=37, column=2, value=CLAS_minnetsucc[1])
+        ws.cell(row=37, column=3, value=CLAS_minnetsucc[0])
+    # 彩铃AS invite响应率 CLAS_mininvite
+    CLAS_mininvite = ywzb_dict.get('CLAS_mininvite', '')
+    if isinstance(CLAS_mininvite, list):
+        ws.cell(row=38, column=2, value=CLAS_mininvite[1])
+        ws.cell(row=38, column=3, value=CLAS_mininvite[0])
+    # 彩铃AS invite响应率 CLAS_mininvite
+    SCPAS_mininvite = ywzb_dict.get('SCPAS_mininvite', '')
+    if isinstance(SCPAS_mininvite, list):
+        ws.cell(row=36, column=2, value=SCPAS_mininvite[1])
+        ws.cell(row=36, column=3, value=SCPAS_mininvite[0])
     wb.save('line.xlsx')
-    quato_data.insert(0, ["指标项", "集群", "指标"])
     quato_html = parseHtml(quato_data, title="关键业务指标", return_all=False)
     return quato_html
 
@@ -286,32 +329,33 @@ def quato_analyse(quato_file):
 def main():
     today = datetime.date.today()
     cpu_file = config.QUATO_PATH + "maxcpu" + str(today) + ".unl"
-    quato_file = config.QUATO_PATH + "ywzb" + str(today) + ".unl"
     quato_report = "report_maxcpu_" + str(today) + ".html"
     if os.path.exists(quato_report):
         os.remove(quato_report)
     shutil.copy("templates/alarm.html", quato_report)
-    if os.path.exists(cpu_file) and os.path.exists(quato_file):
+    t_start = '<table class="tableizer-table" cellspacing=0 width="60%";>\n'
+    t_end = '</table>\n'
+    zyjh_html, cpu_html = None, None
+    if os.path.exists(cpu_file):
         try:
-            t_start = '<table class="tableizer-table" cellspacing=0 width="60%";>\n'
-            t_end = '</table>\n'
             zyjh_html, cpu_html = cpu_analyse(cpu_file)
-            quato_html = quato_analyse(quato_file)
-            if today.weekday() == 3:
-                caps = get_week_caps()
-                caps_html = t_start + caps + t_end
-            else:
-                caps_html = ""
-            html = t_start + quato_html + t_end + "<br></br>" + caps_html + "<br></br>" +\
-                   t_start + cpu_html + t_end + "<br></br>" + t_start + zyjh_html + t_end
-            with open(quato_report, "a") as f:
-                f.write(html)
-            logging.info("业务指标统计生成成功")
         except Exception as e:
             logging.error(e)
-            logging.error("业务指标统计生成失败")
+            logging.error("作业计划指标统计生成失败")
     else:
-        logging.error("业务指标原始文件缺失")
+        logging.error(str(cpu_file) + "原始文件缺失")
+    quato_html = quato_analyse()
+    # 周四生成一周caps 数据
+    if today.weekday() == 3:
+        caps = get_week_caps()
+        caps_html = t_start + caps + t_end
+    else:
+        caps_html = ""
+    html = t_start + quato_html + t_end + "<br></br>" + caps_html + "<br></br>" +\
+           t_start + cpu_html + t_end + "<br></br>" + t_start + zyjh_html + t_end
+    with open(quato_report, "a") as f:
+        f.write(html)
+    logging.info("业务指标统计生成成功")
 
 
 if __name__ == '__main__':

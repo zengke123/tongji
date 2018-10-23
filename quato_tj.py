@@ -15,6 +15,7 @@ from chart_tj import get_date_range
 # 2018-08-03 :增加视频彩铃指标
 # 2018-10-10 :增加SCPAS话单流水号
 # 2018-10-16 :调整业务指标
+# 2018-10-23 :业务指标数据入库ywzb
 
 # 判断网元类型
 def get_cluster_type(cluster):
@@ -166,11 +167,11 @@ def get_vpmn_users():
     pyq_file = config.USERS_PATH + "pyqvolteuser." + str(today) + ".unl"
     crbt_file = config.USERS_PATH + "crbttjvolte." + str(today) + ".unl"
     vrbt_file= config.USERS_PATH + "vrbt." + str(today) + ".unl"
-    vpmn_volte = ""
-    hjh_volte = ""
-    pyq_volte = ""
-    crbt_volte = ""
-    vrbt_users = ""
+    vpmn_volte = 0
+    hjh_volte = 0
+    pyq_volte = 0
+    crbt_volte = 0
+    vrbt_users = 0
     if os.path.exists(vpmn_file):
         vpmn_volte = float(get_data(vpmn_file)[0][0])
     if os.path.exists(hjh_file):
@@ -213,10 +214,12 @@ def get_volte_caps():
 
 def get_ywzb():
     today = datetime.date.today().strftime("%Y-%m-%d")
+    yesterday = (datetime.date.today() - datetime.timedelta(days=1))
     ywzb_file = config.QUATO_PATH + "ywzb" + str(today) + ".unl"
     # list用于生成html格式
     ywzb_data = []
     # 数据入库使用，根据数据库表字段匹配ywzb_dict中的key
+    # ywzb_dict从原始数据中读取的业务指标
     ywzb_dict = {}
     if os.path.exists(ywzb_file):
         for x in get_data(ywzb_file):
@@ -236,6 +239,21 @@ def get_ywzb():
             ywzb_data.append(value)
     else:
         logging.error(str(ywzb_file) + "原始文件缺失")
+    # 数据入库
+    try:
+        # 需要入库的数据，匹配数据库表字段
+        db_data = {}
+        db_data['date']= yesterday.strftime("%Y%m%d")
+        for k, v in ywzb_dict.items():
+            # 指标名称未在config配置,即数据库中无该字段
+            if k not in config.ywzb_tilte.keys():
+                logging.error('业务指标 ' + k + " 未配置,需添加对应表字段")
+            else:
+                db_data[k] = ywzb_dict.get(k)[1]
+                db_data[k+"_cluster"] = ywzb_dict.get(k)[0]
+        db.insert("ywzb", **db_data)
+    except Exception as e:
+        logging.error("业务指标数据入库错误" + str(e))
     return ywzb_data, ywzb_dict
 
 
@@ -335,7 +353,7 @@ def main():
     shutil.copy("templates/alarm.html", quato_report)
     t_start = '<table class="tableizer-table" cellspacing=0 width="60%";>\n'
     t_end = '</table>\n'
-    zyjh_html, cpu_html = None, None
+    zyjh_html, cpu_html = "", ""
     if os.path.exists(cpu_file):
         try:
             zyjh_html, cpu_html = cpu_analyse(cpu_file)

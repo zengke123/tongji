@@ -167,11 +167,9 @@ def get_vpmn_users():
     pyq_file = config.USERS_PATH + "pyqvolteuser." + str(today) + ".unl"
     crbt_file = config.USERS_PATH + "crbttjvolte." + str(today) + ".unl"
     vrbt_file= config.USERS_PATH + "vrbt." + str(today) + ".unl"
-    vpmn_volte = 0
-    hjh_volte = 0
-    pyq_volte = 0
-    crbt_volte = 0
-    vrbt_users = 0
+    ctxonly_file = config.USERS_PATH + "ctxonly" + str(today) + ".unl"
+    ctxuser_file = config.USERS_PATH + "ctx_usernew" + str(today) + ".unl"
+    vpmn_volte, hjh_volte, pyq_volte, crbt_volte, vrbt_users, ctx_user, ctx_group = [0] * 7
     if os.path.exists(vpmn_file):
         vpmn_volte = float(get_data(vpmn_file)[0][0])
     if os.path.exists(hjh_file):
@@ -182,8 +180,14 @@ def get_vpmn_users():
         crbt_volte = sum([float(x[1]) for x in get_data(crbt_file)])
     if os.path.exists(pyq_file):
         vrbt_users = float(get_data(vrbt_file)[0][0])
+    if os.path.exists(ctxonly_file):
+        ctx_user = float(get_data(ctxonly_file)[0][0])
+        if os.path.exists(ctxuser_file):
+            temps = get_data(ctxuser_file)
+            ctx_all = sum([float(x[1]) for x in temps])
+            ctx_group = ctx_all - ctx_user
     db.insert("users", date=today, vpmn_volte=vpmn_volte, crbt_volte=crbt_volte, hjh_volte=hjh_volte,
-              pyq_volte=pyq_volte, vrbt=vrbt_users)
+              pyq_volte=pyq_volte, vrbt=vrbt_users, ctx_group=ctx_group, ctx_user=ctx_user)
     return vpmn_volte, crbt_volte, vrbt_users
 
 

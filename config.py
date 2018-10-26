@@ -1,3 +1,7 @@
+import datetime
+today = datetime.date.today().strftime("%Y%m%d")
+today1 = datetime.date.today().strftime("%Y-%m-%d")
+yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 # 作业计划
 # 网元与集群对应关系
 cluters_dict ={
@@ -39,8 +43,9 @@ cluters_map = {
 
 
 # 每日用户数、短号短信统计配置
-# 原始文件路径,需保留末尾的路径分隔符
-USERS_PATH = "/home/tongji/"
+# 原始文件绝对路径,需保留末尾的路径分隔符
+# USERS_PATH = "/home/tongji/"
+USERS_PATH = "/Users/EB/PycharmProjects/tongji/data/"
 # 原始文件行数，用来检查数据是否缺失
 # 智能网彩铃用户数原始文件行数
 CRBT_VPMN_LINES = 2128
@@ -48,17 +53,33 @@ CRBT_VPMN_LINES = 2128
 SMS_LINES = 220
 
 # 业务指标统计配置
-# 原始文件路径,需保留末尾的路径分隔符
-QUATO_PATH = "/home/tongji/tongji/data/"
+# 原始文件绝对路径,需保留末尾的路径分隔符
+# QUATO_PATH = "/home/tongji/tongji/data/"
+QUATO_PATH = "/Users/EB/PycharmProjects/tongji/data/"
 # maxcpu2018-06-07.unl
 # ywzb2018-06-07.unl
 # volte_crbt2018-06-06.unl
 # volte_scpas2018-06-06.unl
 # host2018-06-06.unl
+# 指标原始文件
 
+src_files = {
+    'streamnumber': USERS_PATH + "tjnew." + str(today) + ".unl",
+    'scpas_streamnumber': USERS_PATH + "scpas_stream." + str(today) + ".unl",
+    'vpmn_user': USERS_PATH + "vpmnvolteuser." + str(today) + ".unl",
+    'hjh_user': USERS_PATH + "hjhvolteuser." + str(today) + ".unl",
+    'pyq_user': USERS_PATH + "pyqvolteuser." + str(today) + ".unl",
+    'crbt_user': USERS_PATH + "crbttjvolte." + str(today) + ".unl",
+    'vrbt_user': USERS_PATH + "vrbt." + str(today) + ".unl",
+    'ctxonly_user': USERS_PATH + "ctxonly" + str(today) + ".unl",
+    'ctxuser': USERS_PATH + "ctx_usernew" + str(today) + ".unl",
+    'caps': QUATO_PATH + "voltecaps" + str(yesterday) + ".unl",
+    'ywzb': QUATO_PATH + "ywzb" + str(today) + ".unl",
+    'cpu': QUATO_PATH + "maxcpu" + str(today1) + ".unl"
+    }
 # 每日统计指标配置
 # 原始数据文件ywzb.unl
-# key与数据库中ywzb表字段名一致
+# key与数据库中ywzb表字段名一致,新增指标必须配置,否则无法入库
 ywzb_tilte = {
     '2gcl_minsucc': '2/3G 彩铃播放成功率',
     '2gscp_minsucc': '2/3G V网呼叫成功率',
@@ -67,7 +88,8 @@ ywzb_tilte = {
     'SCPAS_minnetsucc': 'SCPAS网络接通率',
     'CLAS_minnetsucc': '彩铃AS网络接通率',
     'CLAS_mininvite': '彩铃AS invite响应率',
-    'SCPAS_mininvite': 'SCPAS invite响应率'
+    'SCPAS_mininvite': 'SCPAS invite响应率',
+    'CLAS_minplaysucc': '彩铃AS 放音响应率'
 }
 # 原始数据文件voltecaps.unl
 # value与数据库中caps表字段名一致

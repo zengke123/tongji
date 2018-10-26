@@ -10,7 +10,6 @@ from util import db
 from openpyxl import load_workbook
 from util.TxtParse import TxtParse, parseHtml
 from chart_tj import get_date_range
-
 # 2018-07-26 :增加ctx_caps指标
 # 2018-08-03 :增加视频彩铃指标
 # 2018-10-10 :增加SCPAS话单流水号
@@ -178,7 +177,7 @@ def get_vpmn_users():
         pyq_volte = float(get_data(pyq_file)[0][0])
     if os.path.exists(crbt_file):
         crbt_volte = sum([float(x[1]) for x in get_data(crbt_file)])
-    if os.path.exists(pyq_file):
+    if os.path.exists(vrbt_file):
         vrbt_users = float(get_data(vrbt_file)[0][0])
     if os.path.exists(ctxonly_file):
         ctx_user = float(get_data(ctxonly_file)[0][0])
@@ -343,6 +342,11 @@ def quato_analyse():
     if isinstance(SCPAS_mininvite, list):
         ws.cell(row=36, column=2, value=SCPAS_mininvite[1])
         ws.cell(row=36, column=3, value=SCPAS_mininvite[0])
+    # 彩铃AS 放音成功率 CLAS_minplaysucc
+    CLAS_minplaysucc = ywzb_dict.get('CLAS_minplaysucc', '')
+    if isinstance(CLAS_minplaysucc, list):
+        ws.cell(row=39, column=2, value=CLAS_minplaysucc[1])
+        ws.cell(row=39, column=3, value=CLAS_minplaysucc[0])
     wb.save('line.xlsx')
     quato_html = parseHtml(quato_data, title="关键业务指标", return_all=False)
     return quato_html

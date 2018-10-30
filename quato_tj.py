@@ -7,7 +7,7 @@ from util.TxtParse import parseHtml
 from modules.get_caps import get_caps
 from modules.get_ywzb import get_ywzb
 from modules.get_streamnumber import get_streamnumber, get_scpas_streamnumber
-from modules.get_users import get_all_users
+from modules.get_users import get_v_users
 from modules.get_cpu_html import cpu_analyse
 from modules.get_week_caps import get_week_caps
 # 2018-07-26 :增加ctx_caps指标
@@ -97,7 +97,7 @@ def quato_analyse():
     quato_data.extend([["SCP最大话单流水号", max_cluster, max_streamnumber],
                       ["SCPAS最大话单流水号", scpas_max_cluster, scpas_max_streamnumber]])
     # 汇总用户数统计
-    users = get_all_users()
+    users = get_v_users()
     quato_data.extend([["V网Volte用户数","SCPAS", users.get('vpmn_volte')],
                        ["音频彩铃用户数", "CATAS", users.get('crbt_volte')],
                        ["视频彩铃用户数", "CATAS", users.get('vrbt')]])

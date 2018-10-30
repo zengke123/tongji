@@ -13,7 +13,6 @@ def get_streamnumber(filename):
             max_cluster = x[0]
             max_streamnumber = x[1].strip("\n")
             break
-    print(max_cluster,max_streamnumber)
     return max_cluster, max_streamnumber
 
 

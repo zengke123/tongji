@@ -56,6 +56,43 @@ def get_ctx_group():
         return ctx_group
 
 
+@file_exists(config.src_files.get('users'))
+def get_v_users(filename):
+    today = datetime.date.today().strftime("%Y%m%d")
+    all_users = get_data(filename)
+    user_db = {}
+    user_db['date'] = today
+    for x in all_users:
+        try:
+            x.remove('')
+        except ValueError:
+            pass
+        user_type = x[0].strip(' ')
+        if user_type in config.users_tilte.keys():
+            user_name = config.users_tilte.get(user_type)
+            user_value = int(x[1].strip(' '))
+            user_db[user_name] = user_value
+    crbt_temp = get_crbt_user()
+    crbt = crbt_temp if crbt_temp else 0
+    vrbt_temp = get_vrbt_user()
+    vrbt = vrbt_temp if vrbt_temp else 0
+    ctx_only_temp = get_ctxonly_user()
+    ctx_only = ctx_only_temp if ctx_only_temp else 0
+    ctx_group_temp = get_ctx_group()
+    ctx_group = ctx_group_temp if ctx_group_temp else 0
+    user_db.update({
+        'crbt_volte': crbt,
+        'vrbt': vrbt,
+        'ctx_user': ctx_only,
+        'ctx_group': ctx_group
+        })
+    try:
+        db.insert('users',**user_db)
+    except Exception as e:
+        logging.error("用户数入库错误" + str(e))
+    return user_db
+
+
 # 汇总
 def get_all_users():
     today = datetime.date.today().strftime("%Y%m%d")

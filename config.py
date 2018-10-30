@@ -44,8 +44,7 @@ cluters_map = {
 
 # 每日用户数、短号短信统计配置
 # 原始文件绝对路径,需保留末尾的路径分隔符
-# USERS_PATH = "/home/tongji/"
-USERS_PATH = "/Users/EB/PycharmProjects/tongji/data/"
+USERS_PATH = "/home/tongji/"
 # 原始文件行数，用来检查数据是否缺失
 # 智能网彩铃用户数原始文件行数
 CRBT_VPMN_LINES = 2128
@@ -54,8 +53,7 @@ SMS_LINES = 220
 
 # 业务指标统计配置
 # 原始文件绝对路径,需保留末尾的路径分隔符
-# QUATO_PATH = "/home/tongji/tongji/data/"
-QUATO_PATH = "/Users/EB/PycharmProjects/tongji/data/"
+QUATO_PATH = "/home/tongji/tongji/data/"
 # maxcpu2018-06-07.unl
 # ywzb2018-06-07.unl
 # volte_crbt2018-06-06.unl
@@ -74,7 +72,7 @@ src_files = {
     'ctxonly_user': USERS_PATH + "ctxonly" + str(today) + ".unl",
     'ctxuser': USERS_PATH + "ctx_usernew" + str(today) + ".unl",
     'caps': QUATO_PATH + "voltecaps" + str(yesterday) + ".unl",
-    'ywzb': QUATO_PATH + "ywzb" + str(today) + ".unl",
+    'ywzb': QUATO_PATH + "ywzb" + str(today1) + ".unl",
     'cpu': QUATO_PATH + "maxcpu" + str(today1) + ".unl"
     }
 # 每日统计指标配置
@@ -89,7 +87,7 @@ ywzb_tilte = {
     'CLAS_minnetsucc': '彩铃AS网络接通率',
     'CLAS_mininvite': '彩铃AS invite响应率',
     'SCPAS_mininvite': 'SCPAS invite响应率',
-    'CLAS_minplaysucc': '彩铃AS 放音响应率'
+    'CLAS_minplaysucc': '彩铃AS 放音成功率'
 }
 # 原始数据文件voltecaps.unl
 # value与数据库中caps表字段名一致

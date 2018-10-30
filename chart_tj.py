@@ -3,6 +3,7 @@ import os
 import logging
 import datetime
 from util import db
+from util.file_exists import get_date_range
 from collections import namedtuple
 from openpyxl import load_workbook
 from openpyxl.chart import LineChart, Reference
@@ -13,19 +14,6 @@ def logger():
     logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s [%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
-
-
-def get_date_range(end_date, delta_day):
-    # 转为datetime格式，用于日期计算，str格式无法计算
-    begin_date = datetime.datetime.strptime(end_date, "%Y%m%d") - datetime.timedelta(delta_day)
-    dates = []
-    dt = begin_date
-    date = begin_date.strftime("%Y%m%d")
-    while date < end_date:
-        dates.append(date)
-        dt = dt + datetime.timedelta(1)
-        date = dt.strftime("%Y%m%d")
-    return dates
 
 
 class DrawChart():

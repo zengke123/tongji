@@ -1,3 +1,4 @@
+# 提供周报需要的前一周caps指标
 import datetime
 from util import db
 from util.TxtParse import parseHtml

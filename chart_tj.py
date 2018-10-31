@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# 日报绘图
 import os
 import logging
 import datetime

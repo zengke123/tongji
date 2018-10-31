@@ -1,3 +1,5 @@
+# 生成作业计划中CPU 内存同比\环比结果
+# SCPAS及彩铃AS提取最大CPU 内存 IO,并入库,提供日报中绘图的原始数据
 import config, datetime
 import pandas as pd
 from util import db

@@ -4,47 +4,48 @@ today1 = datetime.date.today().strftime("%Y-%m-%d")
 yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 # 作业计划
 # 网元与集群对应关系
-cluters_dict ={
-    "SCPAS":["scpas03","scpas04","scpas05","scpas06","scpas35","scpas38"],
-    "CL":["sccl16","sccl17","sccl18","sccl19","sccl20","sccl21","sccl22","sccl23"],
-    "BAK_VC":["VC3"],
-    "CLMGR":["SCCLMGR"],
-    "VC" :["VC4"],
-    "SCP" :["scp17", "scp18", "scp19", "scp20", "scp21", "scp22", "scp23", "scp24", "scp25", "scp26",
+cluters_dict = {
+    "SCPAS": ["scpas03", "scpas04", "scpas05", "scpas06", "scpas35", "scpas38"],
+    "CL": ["sccl16", "sccl17", "sccl18", "sccl19", "sccl20", "sccl21", "sccl22", "sccl23"],
+    "BAK_VC": ["VC3"],
+    "CLMGR": ["SCCLMGR"],
+    "VC": ["VC4"],
+    "SCP": ["scp17", "scp18", "scp19", "scp20", "scp21", "scp22", "scp23", "scp24", "scp25", "scp26",
             "scp27", "scp28", "scp29", "scp30", "scp31", "scp32", "scp33", "scp34", "scp36",
             "scp37", "scp39", "scp40", "scp41"],
-    "CATAS" :["CLAS03","CLAS04","CLAS05","CLAS06","CLAS07"],
-    "VSS" : ["VSS1"],
-    "SMP":["SMP2"],
-    "CENTREX":["CTX02","CTXAS04"],
-    "SICP":["SICP01","SICP02","SICP03","SICP04"],
-    "CCP":["CCP01"],
-    "OMS":["eboms"],
-    "CBAS":["CBAS","CDSS01"]
+    "CATAS": ["CLAS03", "CLAS04", "CLAS05", "CLAS06", "CLAS07"],
+    "VSS": ["VSS1"],
+    "SMP": ["SMP2"],
+    "CENTREX": ["CTX02", "CTXAS04"],
+    "SICP": ["SICP01", "SICP02", "SICP03", "SICP04"],
+    "CCP": ["CCP01"],
+    "OMS": ["eboms"],
+    "CBAS": ["CBAS", "CDSS01"]
 }
 
 cluters_map = {
-    "None":"其他",
-    "CATAS":"彩铃CATAS",
-    "CENTREX":"CENTREX",
-    "CLMGR":"彩铃管理库CLMGR",
-    "SMP":"智能网SMP",
-    "BAK_VC":"智能网容灾VC",
-    "VC":"智能网VC",
-    "VSS":"短号短信",
-    "CL":"彩铃呼叫库CL",
-    "SCP":"智能网SCP",
-    "SCPAS":"智能网SCPAS",
-    "SICP":"智能网SICP",
-    "CCP":"智能网CCP",
-    "OMS":"网管OMS",
-    "CBAS":"彩铃CBAS"
+    "None": "其他",
+    "CATAS": "彩铃CATAS",
+    "CENTREX": "CENTREX",
+    "CLMGR": "彩铃管理库CLMGR",
+    "SMP": "智能网SMP",
+    "BAK_VC": "智能网容灾VC",
+    "VC": "智能网VC",
+    "VSS": "短号短信",
+    "CL": "彩铃呼叫库CL",
+    "SCP": "智能网SCP",
+    "SCPAS": "智能网SCPAS",
+    "SICP": "智能网SICP",
+    "CCP": "智能网CCP",
+    "OMS": "网管OMS",
+    "CBAS": "彩铃CBAS"
 }
 
 
 # 每日用户数、短号短信统计配置
 # 原始文件绝对路径,需保留末尾的路径分隔符
-USERS_PATH = "/home/tongji/"
+# USERS_PATH = "/home/tongji/"
+USERS_PATH = "/Users/EB/PycharmProjects/tongji/data/"
 # 原始文件行数，用来检查数据是否缺失
 # 智能网彩铃用户数原始文件行数
 CRBT_VPMN_LINES = 2128
@@ -53,7 +54,8 @@ SMS_LINES = 220
 
 # 业务指标统计配置
 # 原始文件绝对路径,需保留末尾的路径分隔符
-QUATO_PATH = "/home/tongji/tongji/data/"
+# QUATO_PATH = "/home/tongji/tongji/data/"
+QUATO_PATH = "/Users/EB/PycharmProjects/tongji/data/"
 # maxcpu2018-06-07.unl
 # ywzb2018-06-07.unl
 # volte_crbt2018-06-06.unl
@@ -73,7 +75,8 @@ src_files = {
     'ctxuser': USERS_PATH + "ctx_usernew" + str(today) + ".unl",
     'caps': QUATO_PATH + "voltecaps" + str(yesterday) + ".unl",
     'ywzb': QUATO_PATH + "ywzb" + str(today1) + ".unl",
-    'cpu': QUATO_PATH + "maxcpu" + str(today1) + ".unl"
+    'cpu': QUATO_PATH + "maxcpu" + str(today1) + ".unl",
+    'users': QUATO_PATH + "servicetj." + str(today1) + ".unl",
     }
 # 每日统计指标配置
 # 原始数据文件ywzb.unl
@@ -97,3 +100,22 @@ caps_tilte = {
     'CLAS': 'catas_caps',
     'SCP': 'scp_caps'
 }
+# 原始数据文件servicetj.unl
+# value与数据库中users表字段名一致
+users_tilte = {
+    'v2g': 'vpmn_2g',
+    'v4g': 'vpmn_volte',
+    'h2g': 'hjh_2g',
+    'h4g': 'hjh_volte',
+    'p2g': 'pyq_2g',
+    'p4g': 'pyq_volte',
+    'vh2g': 'vh_2g',
+    'vh4g': 'vh_volte',
+    'vp2g': 'vp_2g',
+    'vp4g': 'vp_volte',
+    'hp2g': 'hp_2g',
+    'hp4g': 'hp_volte',
+    'vhp2g': 'vhp_2g',
+    'vhp4g': 'vhp_volte'
+}
+

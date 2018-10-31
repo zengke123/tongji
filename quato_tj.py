@@ -83,7 +83,7 @@ def quato_analyse():
         max_cluster, max_streamnumber = "", ""
     scpas_streamnumber_result = get_scpas_streamnumber()
     if scpas_streamnumber_result:
-        scpas_max_cluster, scpas_max_streamnumber = streamnumber_result
+        scpas_max_cluster, scpas_max_streamnumber = scpas_streamnumber_result
     else:
         scpas_max_cluster, scpas_max_streamnumber = "", ""
     ywzb_result = get_ywzb()

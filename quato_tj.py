@@ -41,12 +41,12 @@ def write_to_report(ywzb_dict, max_cluster, max_streamnumber):
         ws.cell(row=42, column=3, value=scp_maxcaps[0])
     # SCP最大话单流水号
     ws.cell(row=43, column=2, value=max_streamnumber)
-    ws.cell(row=44, column=3, value=max_cluster)
+    ws.cell(row=43, column=3, value=max_cluster)
     # 二卡充值成功率 UCCminsucc
     UCCminsucc = ywzb_dict.get('UCCminsucc', '')
     if isinstance(UCCminsucc, list):
         ws.cell(row=44, column=2, value=UCCminsucc[1])
-        ws.cell(row=45, column=3, value=UCCminsucc[0])
+        ws.cell(row=44, column=3, value=UCCminsucc[0])
     # SCPAS网络接通率 SCPAS_minnetsucc
     SCPAS_minnetsucc = ywzb_dict.get('SCPAS_minnetsucc', '')
     if isinstance(SCPAS_minnetsucc, list):

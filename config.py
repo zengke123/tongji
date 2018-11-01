@@ -77,6 +77,7 @@ src_files = {
     'ywzb': QUATO_PATH + "ywzb" + str(today1) + ".unl",
     'cpu': QUATO_PATH + "maxcpu" + str(today1) + ".unl",
     'users': QUATO_PATH + "servicetj." + str(today1) + ".unl",
+    'dailycaps': QUATO_PATH + "dailycaps" + str(yesterday) + ".unl"
     }
 # 每日统计指标配置
 # 原始数据文件ywzb.unl
@@ -119,3 +120,41 @@ users_tilte = {
     'vhp4g': 'vhp_volte'
 }
 
+# 各网元caps设计容量, keys 与 dailycaps.unl文件中的网元名保持一致
+caps_capacity = {
+    'CRBT-CLAS04': '',
+    'CRBT-CLAS05': '',
+    'CRBT-CLAS06': '',
+    'CRBT-sccl20': '',
+    'CRBT-sccl22': '',
+    'Centrex-CTX02': '',
+    'Centrex-CTXAS04': '',
+    'SCP-scp17': '',
+    'SCP-scp18': '',
+    'SCP-scp19': '',
+    'SCP-scp20': '',
+    'SCP-scp21': '',
+    'SCP-scp22': '',
+    'SCP-scp23': '',
+    'SCP-scp24': '',
+    'SCP-scp25': '',
+    'SCP-scp26': '',
+    'SCP-scp27': '',
+    'SCP-scp28': '',
+    'SCP-scp29': '',
+    'SCP-scp30': '',
+    'SCP-scp31': '',
+    'SCP-scp32': '',
+    'SCP-scp33': '',
+    'SCP-scp34': '',
+    'SCP-scp37': '',
+    'SCP-scp39': '',
+    'SCP-scp40': '',
+    'SCP-scp41': '',
+    'SCP-scpas03': 1800,
+    'SCP-scpas04': 1800,
+    'SCP-scpas05': 1800,
+    'SCP-scpas06': 1800,
+    'SCP-scpas35': 1200,
+    'SCP-scpas38': 1200
+}

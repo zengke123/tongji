@@ -10,11 +10,13 @@ from modules.get_streamnumber import get_streamnumber, get_scpas_streamnumber
 from modules.get_users import get_v_users
 from modules.get_cpu_html import cpu_analyse
 from modules.get_week_caps import get_week_caps
+from modules.get_dailycaps import wirte_caps_to_excle
 # 2018-07-26 :增加ctx_caps指标
 # 2018-08-03 :增加视频彩铃指标
 # 2018-10-10 :增加SCPAS话单流水号
 # 2018-10-16 :调整业务指标
 # 2018-10-23 :业务指标数据入库ywzb
+# 2018-11-01 :日报增加caps统计
 
 
 # 填写业务指标到日报
@@ -35,16 +37,16 @@ def write_to_report(ywzb_dict, max_cluster, max_streamnumber):
     # SCP忙时CAPS数 2gscp_maxcaps
     scp_maxcaps = ywzb_dict.get('2gscp_maxcaps', '')
     if isinstance(scp_maxcaps, list):
-        ws.cell(row=44, column=2, value=scp_maxcaps[1])
-        ws.cell(row=44, column=3, value=scp_maxcaps[0])
+        ws.cell(row=42, column=2, value=scp_maxcaps[1])
+        ws.cell(row=42, column=3, value=scp_maxcaps[0])
     # SCP最大话单流水号
-    ws.cell(row=45, column=2, value=max_streamnumber)
-    ws.cell(row=45, column=3, value=max_cluster)
+    ws.cell(row=43, column=2, value=max_streamnumber)
+    ws.cell(row=44, column=3, value=max_cluster)
     # 二卡充值成功率 UCCminsucc
     UCCminsucc = ywzb_dict.get('UCCminsucc', '')
     if isinstance(UCCminsucc, list):
-        ws.cell(row=46, column=2, value=UCCminsucc[1])
-        ws.cell(row=46, column=3, value=UCCminsucc[0])
+        ws.cell(row=44, column=2, value=UCCminsucc[1])
+        ws.cell(row=45, column=3, value=UCCminsucc[0])
     # SCPAS网络接通率 SCPAS_minnetsucc
     SCPAS_minnetsucc = ywzb_dict.get('SCPAS_minnetsucc', '')
     if isinstance(SCPAS_minnetsucc, list):
@@ -70,6 +72,9 @@ def write_to_report(ywzb_dict, max_cluster, max_streamnumber):
     if isinstance(CLAS_minplaysucc, list):
         ws.cell(row=39, column=2, value=CLAS_minplaysucc[1])
         ws.cell(row=39, column=3, value=CLAS_minplaysucc[0])
+    # 提取cluters中对应的网元的caps数据填入日报(33,6)位置，新增网元在cluters增加即可
+    cluters = ['SCP-scpas03','SCP-scpas04','SCP-scpas05','SCP-scpas06','SCP-scpas35','SCP-scpas38']
+    wirte_caps_to_excle(cluters=cluters, ws=ws, row=33, col=6)
     wb.save('line.xlsx')
 
 

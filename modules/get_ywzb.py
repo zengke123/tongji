@@ -1,6 +1,7 @@
 # 每日统计中业务指标,响应率\接通率等
 import config
 import logging
+import datetime
 from util import db
 from util.file_exists import file_exists, get_data
 
@@ -14,6 +15,8 @@ def get_ywzb(filename):
     ywzb_dict = {}
     # 入库的格式
     ywzb_db = {}
+    yesterday = (datetime.date.today() - datetime.timedelta(days=1))
+    ywzb_db['date']= yesterday.strftime("%Y%m%d")
     for x in get_data(filename):
         try:
             x.remove('')

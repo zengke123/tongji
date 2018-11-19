@@ -139,7 +139,7 @@ caps_capacity = {
     'SCP-scp24': '',
     'SCP-scp25': '',
     'SCP-scp26': '',
-    'SCP-scp27': '',
+    'SCP-scp27': 720,
     'SCP-scp28': '',
     'SCP-scp29': '',
     'SCP-scp30': '',

@@ -26,7 +26,7 @@ def wirte_caps_to_excle(cluters, ws, col, row):
             ws.cell(row=row + i, column=col + 1, value=caps_dict.get(x))
             ws.cell(row=row + i, column=col + 2, value=config.caps_capacity.get(x))
             ws.cell(row=row + i, column=col + 3,
-                    value=format(caps_dict.get(x) /config.caps_capacity.get(x),'.2%'))
+                    value=format(caps_dict.get(x)/config.caps_capacity.get(x),'.2%'))
 
 
 

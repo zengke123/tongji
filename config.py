@@ -77,7 +77,8 @@ src_files = {
     'ywzb': QUATO_PATH + "ywzb" + str(today1) + ".unl",
     'cpu': QUATO_PATH + "maxcpu" + str(today1) + ".unl",
     'users': QUATO_PATH + "servicetj." + str(today1) + ".unl",
-    'dailycaps': QUATO_PATH + "dailycaps" + str(yesterday) + ".unl"
+    'dailycaps': QUATO_PATH + "dailycaps" + str(yesterday) + ".unl",
+    'vsstj': USERS_PATH + "sstj." + str(today) + ".unl"
     }
 # 每日统计指标配置
 # 原始数据文件ywzb.unl

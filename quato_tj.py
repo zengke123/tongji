@@ -11,12 +11,14 @@ from modules.get_users import get_v_users
 from modules.get_cpu_html import cpu_analyse
 from modules.get_week_caps import get_week_caps
 from modules.get_dailycaps import wirte_caps_to_excle
+from modules.get_vsstj import get_vsstj
 # 2018-07-26 :增加ctx_caps指标
 # 2018-08-03 :增加视频彩铃指标
 # 2018-10-10 :增加SCPAS话单流水号
 # 2018-10-16 :调整业务指标
 # 2018-10-23 :业务指标数据入库ywzb
 # 2018-11-01 :日报增加caps统计
+# 2018-11-20 :增加短号短信数据入库
 
 
 # 填写业务指标到日报
@@ -143,6 +145,8 @@ def main():
     with open(quato_report, "a") as f:
         f.write(html)
     logging.info("业务指标统计生成成功")
+    # 短号短信数据入库
+    get_vsstj()
 
 
 if __name__ == '__main__':

@@ -91,7 +91,8 @@ def get_chart(worksheet, title, style, data, row, col):
 
 
 def main():
-    catas = ['CLAS04', 'CLAS05', 'CLAS06', 'sccl20', 'sccl22']
+    # 网元名称需要与网管上保持一致
+    catas = ['CLAS04', 'CLAS05', 'CLAS06', 'sccl20', 'sccl22','CLAS03','CLAS07']
     scpas = ['scpas03', 'scpas04', 'scpas05', 'scpas06', 'scpas35', 'scpas38']
     today = datetime.datetime.now().strftime("%Y%m%d")
     # 日志记录
@@ -108,7 +109,7 @@ def main():
         isRemove = False
     ws = wb.get_sheet_by_name("原始数据")
     ws2 = wb.get_sheet_by_name("主机性能数据")
-    # 集群类型，数据类型，标题，图表样式，excel中数据行，数据列，图表放置位置
+    # 集群类型，数据类型，标题，图表样式，excel原始数据行，数据列，图表放置位置
     AsChart = namedtuple("AsChart", "cluste_type data_type title style row col location")
     as_list = [AsChart(catas, "max_cpu", "CATAS CPU占用率(%)", 10, 2, 1, "A1"),
                AsChart(catas, "max_mem", "CATAS MEM占用率(%)", 10, 2, 9, "A18"),
@@ -128,4 +129,5 @@ def main():
         os.remove("line.xlsx")
 
 if __name__ == "__main__":
+    db.create_engine('root', 'zengke', 'tongji', '127.0.0.1')
     main()

@@ -100,7 +100,8 @@ caps_tilte = {
     'CTX': 'ctx_caps',
     'SCPAS': 'scpas_caps',
     'CLAS': 'catas_caps',
-    'SCP': 'scp_caps'
+    'SCP': 'scp_caps',
+    'VRBT_AS': 'vrbt_caps'
 }
 # 原始数据文件servicetj.unl
 # value与数据库中users表字段名一致

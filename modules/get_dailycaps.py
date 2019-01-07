@@ -1,6 +1,7 @@
 # 获取每套网元的caps指标
 # 数据来源 dailycaps.unl
 import config
+import logging
 from util.file_exists import file_exists, get_data
 
 
@@ -25,8 +26,12 @@ def wirte_caps_to_excle(cluters, ws, col, row):
             ws.cell(row=row + i, column=col, value=x)
             ws.cell(row=row + i, column=col + 1, value=caps_dict.get(x))
             ws.cell(row=row + i, column=col + 2, value=config.caps_capacity.get(x))
-            ws.cell(row=row + i, column=col + 3,
-                    value=format(caps_dict.get(x)/config.caps_capacity.get(x),'.2%'))
+            try:
+                ws.cell(row=row + i, column=col + 3,
+                        value=format(caps_dict.get(x)/config.caps_capacity.get(x),'.2%'))
+            except Exception as e:
+                logging.error(str(e))
+
 
 
 

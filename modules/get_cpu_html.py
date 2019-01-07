@@ -39,6 +39,38 @@ def get_max_cpu(df, col):
     return cpu_data
 
 
+def get_max_cpu_host(df, col):
+    # 将数据按网元类型分组,按col分组,并获取最大CPU和内存占用
+    # 按col进行分区，按CPU列进行排序取最大值所在行的索引值
+    cpu_max_idx = df.groupby(col)["CPU"].idxmax()
+    # 根据最大值索引提取指定列的数据
+    cpu_max_df = df.iloc[cpu_max_idx][["网元","主机","CPU"]]
+    # 调整网元列为索引
+    cpu = cpu_max_df.set_index("网元")
+    # 按col进行分区，按内存剩余率列进行排序取最小值所在行的索引值
+    men_min_idx = df.groupby(col)["内存"].idxmin()
+    # 根据索引提取指定列的数据
+    men_min_df = df.iloc[men_min_idx][["网元", "主机", "内存"]]
+    # 调整网元列为索引
+    mem = men_min_df.set_index("网元")
+    io_min_idx = df.groupby(col)["IO"].idxmin()
+    io_min_df = df.iloc[io_min_idx][["网元", "主机", "IO"]]
+    io = io_min_df.set_index("网元")
+    cluster_types = df[col].drop_duplicates().values
+    # 用于入库的格式
+    cpu_db = [[col, "最大值项:CPU(%)", "最大值项:MEM(%)","最大值项：IO(%)"]]
+    # 显示在邮件正文中的格式
+    cpu_data = [[col, "最大值项:CPU(%)","CPU最大值:主机", "最大值项:MEM(%)","内存最大值:主机",
+                "最大值项：IO(%)","IO最大值:主机"]]
+    for cluster_type in cluster_types:
+        cpu_data.append([cluster_type, cpu.loc[cluster_type]["CPU"], cpu.loc[cluster_type]["主机"],
+                         round(100-mem.loc[cluster_type]["内存"],2), mem.loc[cluster_type]["主机"],
+                         round(100-io.loc[cluster_type]["IO"],2), io.loc[cluster_type]["主机"]])
+        cpu_db.append([cluster_type, cpu.loc[cluster_type]["CPU"], round(100-mem.loc[cluster_type]["内存"],2),
+                       round(100-io.loc[cluster_type]["IO"],2)])
+    return cpu_db, cpu_data
+
+
 # CPU&内存分析
 @file_exists(config.src_files.get('cpu'))
 def cpu_analyse(cpu_file):
@@ -60,7 +92,7 @@ def cpu_analyse(cpu_file):
     # 全网前一周性能数据
     df_wk = df.loc[num2 + 1:]
     # 将数据进行分组处理,并转成list,方便生成HTML
-    list_td_grp = get_max_cpu(df_td, col="网元")
+    list_td_grp, list_td_grp_html = get_max_cpu_host(df_td, col="网元")
 
     # 数据入库
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
@@ -68,10 +100,9 @@ def cpu_analyse(cpu_file):
     for values in list_td_grp[1:]:
         # 数值使用float转换，否则插入数据库Mysql会报错
         db.insert("as_pfmc", date=yesterday, cluste=values[0], max_cpu=float(values[1]),max_mem=float(values[2]), max_io=float(values[3]))
-
-    list_ytd_grp = get_max_cpu(df_ytd, col="网元类型")
-    list_b4ytd_grp = get_max_cpu(df_b4ytd, col="网元类型")
-    list_wk_grp = get_max_cpu(df_wk, col="网元类型")
+    list_ytd_grp= get_max_cpu(df_ytd, col="网元类型")
+    list_b4ytd_grp= get_max_cpu(df_b4ytd, col="网元类型")
+    list_wk_grp= get_max_cpu(df_wk, col="网元类型")
     # 转为DataFrame
     df_ytd_grp = pd.DataFrame(list_ytd_grp[1:], columns=["网元类型", "CPU", "MEM", "IO"])
     df_b4ytd_grp = pd.DataFrame(list_b4ytd_grp[1:], columns=["网元类型", "CPU", "MEM", "IO"])
@@ -97,9 +128,10 @@ def cpu_analyse(cpu_file):
         str = "CPU占用: 最高	{}%	,同比(前一周同一天的数据对比){}	,环比(前一天数据对比){}, 内存占用: 最高	{}%	,同比{}	,环比\
         	{}".format(df_merge.ix[i]["CPU"],check(df_merge.ix[i]["t_cpu_growth"]),check(df_merge.ix[i]["h_cpu_growth"]),df_merge.ix[i]["MEM"],check(df_merge.ix[i]["t_mem_growth"]),check(df_merge.ix[i]["h_mem_growth"]))
         output_data.append([config.cluters_map.get(df_merge.ix[i]["网元类型"]), str])
-
+    t_start = '<table class="tableizer-table" cellspacing=0 width="60%";>\n'
+    t_end = '</table>\n'
     zyjh_html = parseHtml(output_data, "作业计划指标")
-    cpu_today_html = parseHtml(list_td_grp, "AS主机昨日性能指标")
-    cpu_yes_html = parseHtml(list_ytd_grp, "全网主机昨日性能指标")
-    cpu_html = cpu_today_html + cpu_yes_html
+    cpu_today_html = parseHtml(list_td_grp_html, "AS主机昨日性能指标")
+    cpu_yes_html = parseHtml(list_ytd_grp, "全网主机昨日性能指标", return_all=True)
+    cpu_html = cpu_today_html + t_end + "<br></br>" + t_start + cpu_yes_html
     return zyjh_html, cpu_html

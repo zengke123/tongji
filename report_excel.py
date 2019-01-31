@@ -4,6 +4,8 @@
 # Volte彩铃业务报表
 # 主机性能报表
 # 20180925 SCPAS报表新增字段总invite响应率
+# 20190116 新增视频彩铃报表
+
 
 import os
 import datetime
@@ -27,6 +29,7 @@ def format_excel(file, tb_title, tb_name):
 def main():
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
     catas_file = config.QUATO_PATH + "volte_crbt" + str(yesterday) + ".unl"
+    vrbt_file = config.QUATO_PATH + "volte_vrbt" + str(yesterday) + ".unl"
     scpas_file = config.QUATO_PATH + "volte_scpas" + str(yesterday) + ".unl"
     host_file = config.QUATO_PATH + "host" + str(yesterday) + ".unl"
     # 生成volte彩铃业务报表
@@ -57,6 +60,19 @@ def main():
                    '群外呼出invite响应率(%)', '网络接通率(%)', 'none1', 'none2', 'none3', 'none4', '总invite响应率']
     scpas_xlsx = "volte_vpmn_" + str(yesterday) + ".xlsx"
     format_excel(scpas_file, scpas_title, scpas_xlsx)
+
+
+    # 生成视频彩铃业务报表
+    vrbt_title= ["网元标识", "网元名称", "统计开始时间", "统计结束时间", "占用次数(次)", "接通次数(次)",
+                 "应答次数/呼叫成功次数(次", "彩铃调用次数(次)", "彩铃调用成功次数(次)", "呼叫成功数(次)",
+                 "呼叫失败数(次)", "会话正常释放次数(次)", "会话建立时间(毫秒)", "通话持续时长(秒)",
+                 "振铃持续时长(秒)", "与MS之间交互异常次数(次)", "na1", "na2", "na3", "na4", "na5", "na6", "na7",
+                 "na8", "na9", "na10", "平均会话建立时间(秒)", "ms资源申请成功率(%)", "平均通话时长(秒)",
+                 "平均振铃时长(秒)", "被叫接听比率(%)","na11", "彩铃放音成功率(%)", "na12", "处理器平均负荷(%)",
+                 "处理器的最大负荷(%)", "处理器过载时长(秒)", "系统内存占用率(%)", "AS平均CAPS(Erl)"]
+    vrbt_xlsx = "volte_vrbt_" + str(yesterday) + ".xlsx"
+    format_excel(vrbt_file, vrbt_title, vrbt_xlsx)
+
 
     # 生成主机性能报表
     if os.path.exists(host_file):

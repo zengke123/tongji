@@ -94,6 +94,9 @@ def main():
     # 网元名称需要与网管上保持一致
     catas = ['CLAS04', 'CLAS05', 'CLAS06', 'sccl20', 'sccl22','CLAS03','CLAS07']
     scpas = ['scpas03', 'scpas04', 'scpas05', 'scpas06', 'scpas35', 'scpas38']
+    sicp = ['SICP01', 'SICP02', 'SICP03', 'SICP04']
+    smp = ['SMP2']
+    vc = ['VC3', 'VC4']
     today = datetime.datetime.now().strftime("%Y%m%d")
     # 日志记录
     # logger()
@@ -109,6 +112,7 @@ def main():
         isRemove = False
     ws = wb.get_sheet_by_name("原始数据")
     ws2 = wb.get_sheet_by_name("主机性能数据")
+    ws3 = wb.get_sheet_by_name("主机性能数据2")
     # 集群类型，数据类型，标题，图表样式，excel原始数据行，数据列，图表放置位置
     AsChart = namedtuple("AsChart", "cluste_type data_type title style row col location")
     as_list = [AsChart(catas, "max_cpu", "CATAS CPU占用率(%)", 10, 2, 1, "A1"),
@@ -117,11 +121,24 @@ def main():
                AsChart(scpas, "max_cpu", "SCPAS CPU占用率(%)", 10, 2, 25, "K1"),
                AsChart(scpas, "max_mem", "SCPAS MEM占用率(%)", 10, 2, 33, "K18"),
                AsChart(scpas, "max_io", "SCPAS IO占用率(%)", 10, 2, 41, "K32")]
+    as_list2 = [AsChart(sicp, "max_cpu", "SICP CPU占用率(%)", 10, 2, 49, "A1"),
+               AsChart(sicp, "max_mem", "SICP MEM占用率(%)", 10, 2, 55, "A18"),
+               AsChart(sicp, "max_io", "SICP IO占用率(%)", 10, 2, 61, "A32"),
+               AsChart(smp, "max_cpu", "SMP CPU占用率(%)", 10, 2, 67, "K1"),
+               AsChart(smp, "max_mem", "SMP MEM占用率(%)", 10, 2, 70, "K18"),
+               AsChart(smp, "max_io", "SMP IO占用率(%)", 10, 2, 73, "K32"),
+               AsChart(vc, "max_cpu", "VC CPU占用率(%)", 10, 2, 76, "U1"),
+               AsChart(vc, "max_mem", "VC MEM占用率(%)", 10, 2, 79, "U18"),
+               AsChart(vc, "max_io", "VC IO占用率(%)", 10, 2, 82, "U32")]
     # 生成CATAS图表
     for chart in as_list:
         as_data_rows = get_data(date_range, chart.cluste_type, chart.data_type)
         as_chart = get_chart(ws, chart.title, chart.style, data=as_data_rows, row=chart.row, col=chart.col)
         ws2.add_chart(as_chart, chart.location)
+    for chart in as_list2:
+        as_data_rows = get_data(date_range, chart.cluste_type, chart.data_type)
+        as_chart = get_chart(ws, chart.title, chart.style, data=as_data_rows, row=chart.row, col=chart.col)
+        ws3.add_chart(as_chart, chart.location)
     today = datetime.datetime.now().strftime("%Y-%m-%d")
     filename = "d_report_" + str(today) + ".xlsx"
     wb.save(filename)

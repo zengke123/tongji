@@ -5,7 +5,7 @@ yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m
 # 作业计划
 # 网元与集群对应关系
 cluters_dict = {
-    "SCPAS": ["scpas03", "scpas04", "scpas05", "scpas06", "scpas35", "scpas38"],
+    "SCPAS": ["scpas03", "scpas04", "scpas05", "scpas06","scpas07", "scpas35", "scpas38"],
     "CL": ["sccl16", "sccl17", "sccl18", "sccl19", "sccl20", "sccl21", "sccl22", "sccl23"],
     "BAK_VC": ["VC3"],
     "CLMGR": ["SCCLMGR"],
@@ -124,9 +124,11 @@ users_tilte = {
 
 # 各网元caps设计容量, keys 与 dailycaps.unl文件中的网元名保持一致
 caps_capacity = {
+    'CRBT-CLAS03': 245,
     'CRBT-CLAS04': '',
     'CRBT-CLAS05': '',
     'CRBT-CLAS06': '',
+    'CRBT-CLAS07': 245,
     'CRBT-sccl20': '',
     'CRBT-sccl22': '',
     'Centrex-CTX02': '',
@@ -157,6 +159,7 @@ caps_capacity = {
     'SCP-scpas04': 1800,
     'SCP-scpas05': 1800,
     'SCP-scpas06': 1800,
+    'SCP-scpas07': 1800,
     'SCP-scpas35': 1200,
     'SCP-scpas38': 1200
 }

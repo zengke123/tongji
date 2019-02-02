@@ -14,7 +14,10 @@ def get_dailycaps(filename):
             x.remove('')
         except ValueError:
             pass
-        caps_dict[x[0]] = float(x[1])
+        if x[0] == "CRBT-CLAS03" and x[1] == "CLAS":
+            pass
+        else:
+            caps_dict[x[0]] = float(x[2])
     return caps_dict
 
 
@@ -25,10 +28,14 @@ def wirte_caps_to_excle(cluters, ws, col, row):
         for i, x in enumerate(cluters):
             ws.cell(row=row + i, column=col, value=x)
             ws.cell(row=row + i, column=col + 1, value=caps_dict.get(x))
-            ws.cell(row=row + i, column=col + 2, value=config.caps_capacity.get(x))
+            if x == "CRBT-CLAS03":
+                caps_capacity = config.caps_capacity.get("CRBT-CAVTAS03")
+            else:
+                caps_capacity = config.caps_capacity.get(x)
+            ws.cell(row=row + i, column=col + 2, value=caps_capacity)
             try:
                 ws.cell(row=row + i, column=col + 3,
-                        value=format(caps_dict.get(x)/config.caps_capacity.get(x),'.2%'))
+                        value=format(caps_dict.get(x) / caps_capacity, '.2%'))
             except Exception as e:
                 logging.error(str(e))
 

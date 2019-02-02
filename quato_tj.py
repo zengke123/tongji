@@ -75,7 +75,8 @@ def write_to_report(ywzb_dict, max_cluster, max_streamnumber):
         ws.cell(row=39, column=2, value=CLAS_minplaysucc[1])
         ws.cell(row=39, column=3, value=CLAS_minplaysucc[0])
     # 提取cluters中对应的网元的caps数据填入日报(33,6)位置，新增网元在cluters增加即可
-    cluters = ['SCP-scpas03','SCP-scpas04','SCP-scpas05','SCP-scpas06','SCP-scpas35','SCP-scpas38','SCP-scp27']
+    cluters = ['SCP-scpas03', 'SCP-scpas04', 'SCP-scpas05', 'SCP-scpas06', 'SCP-scpas07', 'SCP-scpas35', 'SCP-scpas38',
+               'SCP-scp27', 'CRBT-CLAS03', 'CRBT-CLAS07']
     wirte_caps_to_excle(cluters=cluters, ws=ws, row=33, col=6)
     wb.save('line.xlsx')
 

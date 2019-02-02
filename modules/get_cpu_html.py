@@ -56,12 +56,17 @@ def get_max_cpu_host(df, col):
     io_min_idx = df.groupby(col)["IO"].idxmin()
     io_min_df = df.iloc[io_min_idx][["网元", "主机", "IO"]]
     io = io_min_df.set_index("网元")
-    cluster_types = df[col].drop_duplicates().values
+    # cluster_types = df[col].drop_duplicates().values
     # 用于入库的格式
     cpu_db = [[col, "最大值项:CPU(%)", "最大值项:MEM(%)","最大值项：IO(%)"]]
     # 显示在邮件正文中的格式
     cpu_data = [[col, "最大值项:CPU(%)","CPU最大值:主机", "最大值项:MEM(%)","内存最大值:主机",
                 "最大值项：IO(%)","IO最大值:主机"]]
+    cluster_types = []
+    cluster_types.extend(config.cluters_dict.get("SCPAS"))
+    cluster_types.extend(config.cluters_dict.get("CATAS"))
+    cluster_types.extend(config.cluters_dict.get("SICP"))
+    cluster_types.extend(["VC3", "VC4", "SMP2"])
     for cluster_type in cluster_types:
         cpu_data.append([cluster_type, cpu.loc[cluster_type]["CPU"], cpu.loc[cluster_type]["主机"],
                          round(100-mem.loc[cluster_type]["内存"],2), mem.loc[cluster_type]["主机"],

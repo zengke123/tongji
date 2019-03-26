@@ -10,7 +10,7 @@ def get_streamnumber(filename):
     max_cluster = ""
     record_data = get_data(filename)
     for x in record_data:
-        if re.match('scp[1-9]{3}', str(x[0])):
+        if re.match('s[cb][dp][0-9]{3}', str(x[0])):
             max_cluster = x[0]
             max_streamnumber = x[1].strip("\n")
             break

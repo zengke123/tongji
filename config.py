@@ -97,7 +97,10 @@ ywzb_tilte = {
     'CLAS_minnetsucc': '彩铃AS网络接通率',
     'CLAS_mininvite': '彩铃AS invite响应率',
     'SCPAS_mininvite': 'SCPAS invite响应率',
-    'CLAS_minplaysucc': '彩铃AS 放音成功率'
+    'CLAS_minplaysucc': '彩铃AS 放音成功率',
+    'VRBT_minplaysucc': '视频彩铃 放音成功率',
+    'videobandwidth_ratio': '视频彩铃带宽占用',
+    'videoplay_ratio': '视频彩铃视频播放占比'
 }
 # 原始数据文件voltecaps.unl
 # value与数据库中caps表字段名一致

@@ -93,7 +93,7 @@ def get_chart(worksheet, title, style, data, row, col):
 def main():
     # 网元名称需要与网管上保持一致
     catas = ['CLAS04', 'CLAS05', 'CLAS06', 'sccl20', 'sccl22','CLAS03','CLAS07']
-    scpas = ['scpas03', 'scpas04', 'scpas05', 'scpas06', 'scpas35', 'scpas38']
+    scpas = ['scpas03', 'scpas04', 'scpas05', 'scpas06', 'scpas07', 'scpas08', 'scpas35', 'scpas38']
     sicp = ['SICP01', 'SICP02', 'SICP03', 'SICP04']
     smp = ['SMP2']
     vc = ['VC3', 'VC4']
@@ -116,20 +116,20 @@ def main():
     # 集群类型，数据类型，标题，图表样式，excel原始数据行，数据列，图表放置位置
     AsChart = namedtuple("AsChart", "cluste_type data_type title style row col location")
     as_list = [AsChart(catas, "max_cpu", "CATAS CPU占用率(%)", 10, 2, 1, "A1"),
-               AsChart(catas, "max_mem", "CATAS MEM占用率(%)", 10, 2, 9, "A18"),
-               AsChart(catas, "max_io", "CATAS IO占用率(%)", 10, 2, 17, "A32"),
-               AsChart(scpas, "max_cpu", "SCPAS CPU占用率(%)", 10, 2, 25, "K1"),
-               AsChart(scpas, "max_mem", "SCPAS MEM占用率(%)", 10, 2, 33, "K18"),
-               AsChart(scpas, "max_io", "SCPAS IO占用率(%)", 10, 2, 41, "K32")]
-    as_list2 = [AsChart(sicp, "max_cpu", "SICP CPU占用率(%)", 10, 2, 49, "A1"),
-               AsChart(sicp, "max_mem", "SICP MEM占用率(%)", 10, 2, 55, "A18"),
-               AsChart(sicp, "max_io", "SICP IO占用率(%)", 10, 2, 61, "A32"),
-               AsChart(smp, "max_cpu", "SMP CPU占用率(%)", 10, 2, 67, "K1"),
-               AsChart(smp, "max_mem", "SMP MEM占用率(%)", 10, 2, 70, "K18"),
-               AsChart(smp, "max_io", "SMP IO占用率(%)", 10, 2, 73, "K32"),
-               AsChart(vc, "max_cpu", "VC CPU占用率(%)", 10, 2, 76, "U1"),
-               AsChart(vc, "max_mem", "VC MEM占用率(%)", 10, 2, 79, "U18"),
-               AsChart(vc, "max_io", "VC IO占用率(%)", 10, 2, 82, "U32")]
+               AsChart(catas, "max_mem", "CATAS MEM占用率(%)", 10, 2, 11, "A18"),
+               AsChart(catas, "max_io", "CATAS IO占用率(%)", 10, 2, 21, "A32"),
+               AsChart(scpas, "max_cpu", "SCPAS CPU占用率(%)", 10, 2, 31, "K1"),
+               AsChart(scpas, "max_mem", "SCPAS MEM占用率(%)", 10, 2, 41, "K18"),
+               AsChart(scpas, "max_io", "SCPAS IO占用率(%)", 10, 2, 51, "K32")]
+    as_list2 = [AsChart(sicp, "max_cpu", "SICP CPU占用率(%)", 10, 2, 61, "A1"),
+               AsChart(sicp, "max_mem", "SICP MEM占用率(%)", 10, 2, 67, "A18"),
+               AsChart(sicp, "max_io", "SICP IO占用率(%)", 10, 2, 73, "A32"),
+               AsChart(smp, "max_cpu", "SMP CPU占用率(%)", 10, 2, 79, "K1"),
+               AsChart(smp, "max_mem", "SMP MEM占用率(%)", 10, 2, 82, "K18"),
+               AsChart(smp, "max_io", "SMP IO占用率(%)", 10, 2, 85, "K32"),
+               AsChart(vc, "max_cpu", "VC CPU占用率(%)", 10, 2, 88, "U1"),
+               AsChart(vc, "max_mem", "VC MEM占用率(%)", 10, 2, 91, "U18"),
+               AsChart(vc, "max_io", "VC IO占用率(%)", 10, 2, 94, "U32")]
     # 生成CATAS图表
     for chart in as_list:
         as_data_rows = get_data(date_range, chart.cluste_type, chart.data_type)

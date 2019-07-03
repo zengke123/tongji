@@ -75,8 +75,8 @@ def write_to_report(ywzb_dict, max_cluster, max_streamnumber):
         ws.cell(row=39, column=2, value=CLAS_minplaysucc[1])
         ws.cell(row=39, column=3, value=CLAS_minplaysucc[0])
     # 提取cluters中对应的网元的caps数据填入日报(33,6)位置，新增网元在cluters增加即可
-    cluters = ['SCP-scpas03', 'SCP-scpas04', 'SCP-scpas05', 'SCP-scpas06', 'SCP-scpas07', 'SCP-scpas35', 'SCP-scpas38',
-               'SCP-scp27', 'CRBT-CLAS03', 'CRBT-CLAS07']
+    cluters = ['SCP-scpas03', 'SCP-scpas04', 'SCP-scpas05', 'SCP-scpas06', 'SCP-scpas07', 'SCP-scpas08',
+               'SCP-scpas35', 'SCP-scpas38', 'SCP-scp27', 'CRBT-CLAS03', 'CRBT-CLAS07']
     wirte_caps_to_excle(cluters=cluters, ws=ws, row=33, col=6)
     wb.save('line.xlsx')
 
@@ -135,6 +135,8 @@ def main():
         logging.error(e)
         logging.error("作业计划指标统计生成失败")
     quato_html = quato_analyse()
+    # 短号短信数据入库
+    get_vsstj()
     # 周四生成一周caps 数据
     if today.weekday() == 3:
         caps = get_week_caps()
@@ -146,8 +148,6 @@ def main():
     with open(quato_report, "a") as f:
         f.write(html)
     logging.info("业务指标统计生成成功")
-    # 短号短信数据入库
-    get_vsstj()
 
 
 if __name__ == '__main__':

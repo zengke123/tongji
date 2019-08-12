@@ -57,6 +57,42 @@ def get_ctx_group():
         return ctx_group
 
 
+@file_exists(config.src_files.get('crbt_23g'))
+def get_crbt23g_user(filename):
+    _temps = get_data(filename)
+    try:
+        temps = _temps[:-2]
+        crbt23g = sum([float(x[1]) for x in temps])
+    except Exception:
+        crbt23g = 0
+    return crbt23g
+
+
+@file_exists(config.src_files.get('sicp1'))
+def get_sicp1_user(filename):
+    temps = get_data(filename)
+    return [float(x[0]) for x in temps] if len(temps) ==2 else [0, 0]
+
+
+@file_exists(config.src_files.get('sicp3'))
+def get_sicp3_user(filename):
+    temps = get_data(filename)
+    return [float(x[0]) for x in temps] if len(temps) == 2 else [0, 0]
+
+
+@file_exists(config.src_files.get('sicp4'))
+def get_sicp4_user(filename):
+    temps = get_data(filename)
+    return [float(x[0]) for x in temps] if len(temps) ==2 else [0, 0]
+
+
+def get_cy_ccp():
+    cy1, ccp1 = get_sicp1_user()
+    cy3, ccp3 = get_sicp3_user()
+    cy4, ccp4 = get_sicp4_user()
+    return (cy1+cy3+cy4, ccp1+ccp3+ccp4)
+
+
 @file_exists(config.src_files.get('users'))
 def get_v_users(filename):
     today = datetime.date.today().strftime("%Y%m%d")
@@ -81,11 +117,16 @@ def get_v_users(filename):
     ctx_only = ctx_only_temp if ctx_only_temp else 0
     ctx_group_temp = get_ctx_group()
     ctx_group = ctx_group_temp if ctx_group_temp else 0
+    crbt23g = get_crbt23g_user()
+    newcy, ccp = get_cy_ccp()
     user_db.update({
         'crbt_volte': crbt,
         'vrbt': vrbt,
         'ctx_user': ctx_only,
-        'ctx_group': ctx_group
+        'ctx_group': ctx_group,
+        'crbt_23g': crbt23g,
+        'newcy': newcy,
+        'ccp': ccp
         })
     try:
         db.insert('users',**user_db)

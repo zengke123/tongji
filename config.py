@@ -76,7 +76,7 @@ src_files = {
     'caps': QUATO_PATH + "voltecaps" + str(yesterday) + ".unl",
     'ywzb': QUATO_PATH + "ywzb" + str(today1) + ".unl",
     'cpu': QUATO_PATH + "maxcpu" + str(today1) + ".unl",
-    'users': QUATO_PATH + "servicetj." + str(today1) + ".unl",
+    'users': QUATO_PATH + "servicetj." + str(today) + ".unl",
     'dailycaps': QUATO_PATH + "dailycaps" + str(yesterday) + ".unl",
     'vsstj': USERS_PATH + "sstj." + str(today) + ".unl",
     'ypfmc': QUATO_PATH + "ypfmc" + str(today1) + ".unl",
@@ -84,6 +84,10 @@ src_files = {
     'tcaps_y': QUATO_PATH + "tcaps" + str(yesterday) + ".unl",
     'tsucc': QUATO_PATH + "tsucc" + str(today1) + ".unl",
     'tsucc_y': QUATO_PATH + "tsucc" + str(yesterday) + ".unl",
+    'crbt_23g': USERS_PATH + "crbttj." + str(today) + ".unl",
+    'sicp1': USERS_PATH + "sicp1new" + str(today) + ".unl",
+    'sicp3': USERS_PATH + "sicp3new" + str(today) + ".unl",
+    'sicp4': USERS_PATH + "sicp4new" + str(today) + ".unl"
     }
 # 每日统计指标配置
 # 原始数据文件ywzb.unl

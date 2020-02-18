@@ -93,6 +93,12 @@ def get_cy_ccp():
     return (cy1+cy3+cy4, ccp1+ccp3+ccp4)
 
 
+@file_exists(config.src_files.get('scim'))
+def get_scim_user(filename):
+    scim_user = float(get_data(filename)[0][1])
+    return scim_user
+
+
 @file_exists(config.src_files.get('users'))
 def get_v_users(filename):
     today = datetime.date.today().strftime("%Y%m%d")
@@ -119,6 +125,7 @@ def get_v_users(filename):
     ctx_group = ctx_group_temp if ctx_group_temp else 0
     crbt23g = get_crbt23g_user()
     newcy, ccp = get_cy_ccp()
+    scim = get_scim_user()
     user_db.update({
         'crbt_volte': crbt,
         'vrbt': vrbt,
@@ -126,7 +133,8 @@ def get_v_users(filename):
         'ctx_group': ctx_group,
         'crbt_23g': crbt23g,
         'newcy': newcy,
-        'ccp': ccp
+        'ccp': ccp,
+        'scim': scim
         })
     try:
         db.insert('users',**user_db)
@@ -135,7 +143,7 @@ def get_v_users(filename):
     return user_db
 
 
-# 汇总
+# 汇总, 不再使用
 def get_all_users():
     today = datetime.date.today().strftime("%Y%m%d")
     vpmn = get_vpmn_user() if get_vpmn_user() else 0

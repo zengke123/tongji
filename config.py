@@ -87,7 +87,8 @@ src_files = {
     'crbt_23g': USERS_PATH + "crbttj." + str(today) + ".unl",
     'sicp1': USERS_PATH + "sicp1new" + str(today) + ".unl",
     'sicp3': USERS_PATH + "sicp3new" + str(today) + ".unl",
-    'sicp4': USERS_PATH + "sicp4new" + str(today) + ".unl"
+    'sicp4': USERS_PATH + "sicp4new" + str(today) + ".unl",
+    'scim': USERS_PATH + "scim." + str(today) + ".unl"
     }
 # 每日统计指标配置
 # 原始数据文件ywzb.unl

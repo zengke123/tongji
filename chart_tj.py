@@ -92,11 +92,12 @@ def get_chart(worksheet, title, style, data, row, col):
 
 def main():
     # 网元名称需要与网管上保持一致
-    catas = ['CLAS04', 'CLAS05', 'CLAS06', 'sccl20', 'sccl22','CLAS03','CLAS07']
+    catas = ['CLAS04', 'CLAS05', 'CLAS06', 'sccl20', 'sccl22','CLAS03','CLAS07','CLAS07']
     scpas = ['scpas03', 'scpas04', 'scpas05', 'scpas06', 'scpas07', 'scpas08', 'scpas35', 'scpas38']
     sicp = ['SICP01', 'SICP02', 'SICP03', 'SICP04']
     smp = ['SMP2']
     vc = ['VC3', 'VC4']
+    ctx = ['CTX02', 'CTX03', 'CTXAS04', 'CTX05']
     today = datetime.datetime.now().strftime("%Y%m%d")
     # 日志记录
     # logger()
@@ -120,7 +121,10 @@ def main():
                AsChart(catas, "max_io", "CATAS IO占用率(%)", 10, 2, 21, "A32"),
                AsChart(scpas, "max_cpu", "SCPAS CPU占用率(%)", 10, 2, 31, "K1"),
                AsChart(scpas, "max_mem", "SCPAS MEM占用率(%)", 10, 2, 41, "K18"),
-               AsChart(scpas, "max_io", "SCPAS IO占用率(%)", 10, 2, 51, "K32")]
+               AsChart(scpas, "max_io", "SCPAS IO占用率(%)", 10, 2, 51, "K32"),
+               AsChart(ctx, "max_cpu", "CTX CPU占用率(%)", 10, 2, 97, "U1"),
+               AsChart(ctx, "max_mem", "CTX MEM占用率(%)", 10, 2, 102, "U18"),
+               AsChart(ctx, "max_io", "CTX IO占用率(%)", 10, 2, 107, "U32")]
     as_list2 = [AsChart(sicp, "max_cpu", "SICP CPU占用率(%)", 10, 2, 61, "A1"),
                AsChart(sicp, "max_mem", "SICP MEM占用率(%)", 10, 2, 67, "A18"),
                AsChart(sicp, "max_io", "SICP IO占用率(%)", 10, 2, 73, "A32"),
